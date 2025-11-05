@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Clone - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .auth-container {
+            background-color: #191414;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 450px;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            background-color: #121212;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            box-shadow: 0 0 0 2px #1db954;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 500px;
+            background-color: #1db954;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            background-color: #1ed760;
+            transform: scale(1.03);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #1db954;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #e22134;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #1db954;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #535353;
+        }
+
+        .divider span {
+            padding: 0 10px;
+            color: #b3b3b3;
+            font-size: 0.8rem;
+        }
+
+        .demo-accounts {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #121212;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .demo-accounts h3 {
+            margin-bottom: 10px;
+            color: #b3b3b3;
+        }
+
+        .demo-accounts p {
+            margin-bottom: 5px;
+            color: #b3b3b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <h1>Spotify</h1>
+        </div>
+        <div class="auth-box">
+            <h2>Log in to Spotify</h2>
+            <div class="input-group">
+                <label for="login-user">Username</label>
+                <input type="text" id="login-user" placeholder="Username">
+                <div class="error-message" id="login-user-error">Please enter a valid username</div>
+            </div>
+            <div class="input-group">
+                <label for="login-pass">Password</label>
+                <input type="password" id="login-pass" placeholder="Password">
+                <div class="error-message" id="login-pass-error">Please enter your password</div>
+            </div>
+            <button id="login-btn" class="auth-btn">Log In</button>
+            <div class="success-message" id="login-success">Login successful! Redirecting...</div>
+            
+            <div class="divider"><span>or</span></div>
+            
+            <div class="demo-accounts">
+                <h3>Demo Accounts</h3>
+                <p>Username: demo1, Password: password1</p>
+                <p>Username: demo2, Password: password2</p>
+            </div>
+            
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="signup.html">Sign up for Spotify</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize demo accounts if not already present
+        function initializeDemoAccounts() {
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            
+            // Add demo accounts if they don't exist
+            const demoAccounts = [
+                { user: "demo1", pass: "password1" },
+                { user: "demo2", pass: "password2" }
+            ];
+            
+            demoAccounts.forEach(demoAccount => {
+                if (!users.find(u => u.user === demoAccount.user)) {
+                    users.push(demoAccount);
+                }
+            });
+            
+            localStorage.setItem("users", JSON.stringify(users));
+        }
+        
+        // Initialize demo accounts on page load
+        initializeDemoAccounts();
+        
+        // Login functionality
+        document.getElementById("login-btn").addEventListener("click", () => {
+            let user = document.getElementById("login-user").value.trim();
+            let pass = document.getElementById("login-pass").value;
+            let userError = document.getElementById("login-user-error");
+            let passError = document.getElementById("login-pass-error");
+            let successMsg = document.getElementById("login-success");
+            
+            // Reset error messages
+            userError.style.display = "none";
+            passError.style.display = "none";
+            successMsg.style.display = "none";
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (!user) {
+                userError.style.display = "block";
+                isValid = false;
+            }
+            
+            if (!pass) {
+                passError.style.display = "block";
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Check credentials
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            let found = users.find(u => u.user === user && u.pass === pass);
+            
+            if (found) {
+                // Store current user session
+                localStorage.setItem("currentUser", JSON.stringify(found));
+                
+                // Show success message
+                successMsg.style.display = "block";
+                
+                // Redirect after a short delay
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
+            } else {
+                userError.textContent = "Invalid username or password";
+                userError.style.display = "block";
+            }
+        });
+        
+        // Allow login on Enter key press
+        document.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                document.getElementById("login-btn").click();
+            }
+        });
+    </script>
+</body>
+</html>
